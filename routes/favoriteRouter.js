@@ -26,18 +26,24 @@ favoriteRouter
                             favorite.campsites.push(campsite);
                         }
                     });
+                    favorite.save().then((favorite) => {
+                        res.statusCode = 200;
+                        console.log('Favorite Updated', favorite);
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(favorite);
+                    });
                 } else {
                     Favorite.create(req.body.campsites).then((favorite) => {
                         favorite.user = req.user._id;
                         req.body.forEach((campsite) => {
                             favorite.campsites.push(campsite);
                         });
-                    });
-                    favorite.save().then((favorite) => {
-                        res.statusCode = 200;
-                        console.log('Favorite Created', favorite);
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json(favorite);
+                        favorite.save().then((favorite) => {
+                            res.statusCode = 200;
+                            console.log('Favorite Created', favorite);
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(favorite);
+                        });
                     });
                 }
             })
@@ -49,6 +55,7 @@ favoriteRouter
     })
     .delete(
         cors.corsWithOptions,
+        authenticate.verifyUser,
         authenticate.verifyAdmin,
         (req, res, next) => {
             if (Favorite) {
@@ -78,6 +85,12 @@ favoriteRouter
                         if (!favorite.campsites.includes(campsite)) {
                             favorite.campsites.push(campsite);
                         }
+                    });
+                    favorite.save().then((favorite) => {
+                        res.statusCode = 200;
+                        console.log('Favorite Updated', favorite);
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(favorite);
                     });
                 } else {
                     res.setHeader('Content-Type', 'text/plain');

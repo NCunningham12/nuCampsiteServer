@@ -10,6 +10,7 @@ const router = express.Router();
 router.get(
     '/',
     cors.corsWithOptions,
+    authenticate.verifyUser,
     authenticate.verifyAdmin,
     (req, res, next) => {
         User.find()
